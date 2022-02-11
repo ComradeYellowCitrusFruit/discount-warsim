@@ -1,8 +1,4 @@
 ### Holds menus like the main menu, pause menu, etc
-import io
-import math
-import os
-import time
 from fileSystem import deleteSave, startGame
 from misc import *
 
