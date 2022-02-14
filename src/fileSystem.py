@@ -1,9 +1,11 @@
 import os
 import random
+import json
 from misc import *
 from menus import *
 
 ### First creates a save, different than saving
+### TODO: Make use of JSON
 def startGame():
     savename = '.\\savefiles\\' + input('What do you want to name your save?\n')
     if os.path.exists(savename):
@@ -19,31 +21,123 @@ def startGame():
     print('5) Insanity | Extreme Challenge, you start out poor with only one piece of land\n')
     print('6) Pure Insanity | May God have mercy on your soul\n')
     difficulty = int(input())
-    savefile = open(savename + '.ply.txt', 'x')
-    with open(savename + '.ply.txt', 'x') as savefile:
-        savefile.write(difficulty + '\n')
-        if difficulty == 1:
-            ### Player info is .ply.txt
-            ### Gold
-            savefile.write(random.randrange(75000,250000) + '\n')
-            ### Land
-            savefile.write(random.randrange(15,35) + '\n')
-            ### Peasants/Soldiers/Elite Soldiers
-            savefile.write(random.randrange(1000,10000) + '\n')
-            savefile.write(random.randrange(500, 15000) + '\n')
-            savefile.write(random.randrange(25, 500) + '\n')
-            ### Rebel chance
-            if random.randrange(0,1000) < 999:
-                savefile.write('0\n')
-            else:
-                savefile.write('1\n')
-            ### Foreign info lines
-            ### TODO: Add naming, also add IDs
-            rnd = random.randrange(10,35)
-            for i in range(rnd):
-                foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
-                with open(savename + '.ext.txt', 'x') as foreignfile:
-                    foreignfile.write()
+    ### Index file keeps track of some save info
+    indexfile = open(savename + '.txt', 'x')
+    with open(savename + '.txt', 'x') as indexfile:
+        indexfile.write(difficulty + '\n')
+        savefile = open(savename + '.ply.txt', 'x')
+        with open(savename + '.ply.txt', 'x') as savefile:
+            if difficulty == 1:
+                ### Player info is .ply.txt
+                ### Gold
+                savefile.write(random.randrange(75000,250000) + '\n')
+                ### Land
+                savefile.write(random.randrange(15,35) + '\n')
+                ### Peasants/Soldiers/Elite Soldiers
+                savefile.write(random.randrange(1000,10000) + '\n')
+                savefile.write(random.randrange(500, 15000) + '\n')
+                savefile.write(random.randrange(25, 500) + '\n')
+                ### Tech
+                ### Tech is the level your technology is at, higher is better
+                if not random.randrange(0,100000) < 99999:
+                    savefile.write('10\n')
+                else:
+                    savefile.write('9\n')
+                ### Rebel chance
+                ### TODO: Add rebels
+                if random.randrange(0,1000) < 999:
+                    savefile.write('0\n')
+                else:
+                    savefile.write('1\n')
+                ### TODO: Add naming
+                ### TODO: Add Diplomacy
+                rnd = random.randrange(10,35)
+                for i in range(rnd):
+                    indexfile.write(i + '\n')
+                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
+                    with open(savename + '.ext.txt', 'x') as foreignfile:
+                        ### Gold
+                        foreignfile.write(random.randrange(2000, 75000) + '\n')
+                        ### Land
+                        foreignfile.write(random.randrange(5,15) + '\n')
+                        ### Peasants/Soldiers/Elite Soldiers
+                        foreignfile.write(random.randrange(100, 10000) + '\n')
+                        foreignfile.write(random.randrange(100, 10000) + '\n')
+                        foreignfile.write(random.randrange(50, 2500) + '\n')
+                        ### Tech
+                        q = random.randrange(0,200)
+                        if q >= 199:
+                            ### Guns are almost in use
+                            foreignfile.write('10\n')
+                        elif q >= 176 and q < 199:
+                            ### Mid renaissance
+                            foreignfile.write('9\n')
+                        elif q >= 151 and q <= 175:
+                            ### Early renaissance
+                            foreignfile.write('8\n')
+                        elif q >= 126 and q <= 150:
+                            ### Late medival
+                            foreignfile.write('7\n')
+                        elif q >= 101 and q <= 125:
+                            ### Mid medival
+                            foreignfile.write('6\n')
+                        elif q >= 76 and q <= 100:
+                            ### Early medival
+                            foreignfile.write('5\n')
+                        elif q >= 46 and q <= 75:
+                            ### Bronze age
+                            foreignfile.write('4\n')
+                        elif q >= 41 and q <= 45:
+                            ### More advanced masonry and tools
+                            foreignfile.write('3\n')
+                        elif q >= 36 and q <= 40:
+                            ### Basic masonry
+                            foreignfile.write('2\n')
+                        elif q >= 31 and q <= 35:
+                            ### Just discovered farming
+                            foreignfile.write('1\n')
+                        elif q >= 0 and q <= 30:
+                            ### Tribal
+                            foreignfile.write('0\n')
+                        ### The most basic possible diplomacy, who they are and are not at war with
+                        for ii in rnd:
+                            ### Determines how warlike they are
+                            q = random.randrange(1, 200)
+                            if q >= 175:
+                                ### Fights everyone
+                                foreignfile.write('8\n')
+                                w = 8
+                            elif q >= 150 and q <= 174:
+                                ### Highly prone to wars
+                                foreignfile.write('7\n')
+                                w = 7
+                            elif q >= 125 and q <= 149:
+                                ### Still prone to wars
+                                foreignfile.write('6\n')
+                                w = 6
+                            elif q >= 100 and q <= 124:
+                                ### Easy to agitate
+                                foreignfile.write('5\n')
+                            elif q >= 75 and q <= 99:
+                                ### Will go to war if necessary
+                                foreignfile.write('4\n')
+                                w = 4
+                            elif q >= 50 and q <= 74:
+                                ### Reluctant to go to war
+                                foreignfile.write('3\n')
+                                w = 3
+                            elif q >= 25 and q <= 49:
+                                ### Will only go to war if absolutely necessary
+                                foreignfile.write('2\n')
+                                w = 2
+                            elif q >= 0 and q <= 24:
+                                ### Will not attack ever
+                                foreignfile.write('1\n')
+                                w = 1
+                            if w == 8:
+                                warfile = open(savename + '.war.txt', 'x')
+                                with open(savename + '.war.txt', 'x') as warfile:
+                                    warfile.write('1\n')
 ### Deletes save files
 def deleteSave():
     savename = '.\\savefiles\\' + input('What is the name of the save you want to delete?   ') + '.txt'
