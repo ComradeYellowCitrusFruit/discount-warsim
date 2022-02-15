@@ -1,5 +1,5 @@
 ### Holds menus like the main menu, pause menu, etc
-from fileSystem import deleteSave, startGame
+from fileSystem import *
 from misc import *
 
 def mainMenu():
