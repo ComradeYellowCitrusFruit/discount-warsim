@@ -69,34 +69,25 @@ def startGame():
                         ### Tech
                         q = random.randrange(0,200)
                         if q >= 199:
-                            ### Guns are almost in use
+                            ### Renaissance
                             foreignfile.write('10\n')
                         elif q >= 176 and q < 199:
-                            ### Mid renaissance
                             foreignfile.write('9\n')
                         elif q >= 151 and q <= 175:
-                            ### Early renaissance
                             foreignfile.write('8\n')
                         elif q >= 126 and q <= 150:
-                            ### Late medival
                             foreignfile.write('7\n')
                         elif q >= 101 and q <= 125:
-                            ### Mid medival
                             foreignfile.write('6\n')
                         elif q >= 76 and q <= 100:
-                            ### Early medival
                             foreignfile.write('5\n')
                         elif q >= 46 and q <= 75:
-                            ### Bronze age
                             foreignfile.write('4\n')
                         elif q >= 41 and q <= 45:
-                            ### More advanced masonry and tools
                             foreignfile.write('3\n')
                         elif q >= 36 and q <= 40:
-                            ### Basic masonry
                             foreignfile.write('2\n')
                         elif q >= 31 and q <= 35:
-                            ### Just discovered farming
                             foreignfile.write('1\n')
                         elif q >= 0 and q <= 30:
                             ### Tribal
@@ -227,8 +218,8 @@ def startGame():
                                 warfile.write('<---END OF FILE--->')
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
-                ### Creates player warfile for later use
-                warfile = open(savename + '.ply.war.txt', 'x')
+            savefile.write('<---END OF FILE--->')
+        indexfile.write('<---END OF FILE--->')
 ### Deletes save files
 def deleteSave():
     savename = '.\\savefiles\\' + input('What is the name of the save you want to delete?   ') + '.txt'
