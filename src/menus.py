@@ -11,9 +11,16 @@ def mainMenu():
         quit()
     elif input() == '1':
         clearConsole()
-        startGame()
+        return(1)
     elif input() == '2':
         print('To be added')
         clearConsole()
     elif input() == '3':
+        return(3)
+def initialMenu():
+    if mainMenu() == 1:
+        startGame()
+    elif mainMenu() == 3:
         deleteSave()
+    else:
+        initialMenu()
