@@ -19,7 +19,10 @@ def mainMenu():
         return(3)
 def initialMenu():
     if mainMenu() == 1:
-        startGame()
+        if startGame() == 0:
+            startGame()
+        else:
+            initialMenu()
     elif mainMenu() == 3:
         deleteSave()
     else:

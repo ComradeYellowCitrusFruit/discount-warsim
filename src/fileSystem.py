@@ -4,18 +4,27 @@ from misc import *
 from menus import *
 
 ### First creates a save, different than saving
+### startGame version alpha 1.0.1
 def startGame():
-    savename = '.\\savefiles\\' + input('What do you want to name your save?\n')
+    savename = input('What do you want to name your save?\n')
     if os.path.exists(savename + '.txt'):
         if input('That name is already taken, would you like to delete that save, Y/N?   ') == 'y':
-            os.remove(savename + '.txt')
-            os.remove(savename + '.ply.txt')
-            os.remove(savename + 'ext.txt')
-            os.remove(savename + 'war.txt')
+            os.remove('.\\savefiles\\' + savename + '.txt')
+            os.remove('.\\savefiles\\' + savename + '.ply.txt')
+            os.remove('.\\savefiles\\' + savename + 'ext.txt')
+            os.remove('.\\savefiles\\' + savename + 'war.txt')
+            comb(savename)
+            return 0
         else:
-            savename = '.\\savefiles\\' + input('\nWhat do you want to name your save?\n')
+            savename = input('\nWhat do you want to name your save?\n')
     if os.path.exists('.\\savefiles\\list.txt'):
+        savelist = open('.\\savefiles\\list.txt', 'a')
+        with open('.\\savefiles\\list.txt', 'a') as savelist:
+            savelist.write(savename + '\n')
+    else:
         savelist = open('.\\savefiles\\list.txt', 'x')
+        with open('.\\savefiles\\list.txt', 'x') as savelist:
+            savelist.write(savename + '\n')
     clearConsole()
     print('What difficulty do you want your save to be?\n')
     print('1) Little baby mode | No challenge, you start out loaded with resources and land, and everyone else is weak\n')
@@ -25,6 +34,8 @@ def startGame():
     print('5) Insanity | Extreme Challenge, you start out poor with only one piece of land\n')
     print('6) Pure Insanity | May God have mercy on your soul\n')
     difficulty = int(input())
+    _savename = savename
+    savename = '.\\savefiles\\' + _savename
     ### Index file keeps track of some save info
     indexfile = open(savename + '.txt', 'x')
     with open(savename + '.txt', 'x') as indexfile:
@@ -1032,6 +1043,7 @@ def startGame():
                 ### END OF FOREIGN FILE
             savefile.write('<---END OF FILE--->')
         indexfile.write('<---END OF FILE--->')
+    return 1
 ### Deletes save files
 ### TODO: Update deleteSave()
 def warlikeGen():
@@ -1061,15 +1073,25 @@ def warlikeGen():
         ### Will not attack ever
         return 1
 def deleteSave():
-    savename = '.\\savefiles\\' + input('What is the name of the save you want to delete?   ')
-    if os.path.exists(savename + '.txt'):
-        os.remove(savename + '.txt')
-        os.remove(savename + '.ply.txt')
-        os.remove(savename + 'ext.txt')
-        os.remove(savename + 'war.txt')
+    savename = input('What is the name of the save you want to delete?   ')
+    if os.path.exists('.\\savefiles\\' + savename + '.txt'):
+        os.remove('.\\savefiles\\' + savename + '.txt')
+        os.remove('.\\savefiles\\' + savename + '.ply.txt')
+        os.remove('.\\savefiles\\' + savename + 'ext.txt')
+        os.remove('.\\savefiles\\' + savename + 'war.txt')
+        comb(savename)
         return(1)
     else:
         print("The file does not exist")
         return(0)
 def loadSave():
     print('Which save would you like to load?\n')
+def comb(savename):
+    savelist = open('.\\savefiles\\list.txt', 'r')
+    namelist = savelist.readlines()
+    savelist.close()
+    _savelist = open('.\\savefiles\\list.txt', 'w')
+    with open('.\\savefiles\\list.txt', 'w') as savelist_:
+        for name in namelist:
+            if not name.strip('\n') == savename:
+                savelist_.write(name)
