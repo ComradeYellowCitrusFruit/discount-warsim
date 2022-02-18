@@ -3,6 +3,7 @@
 from fileSystem import *
 from misc import *
 from menus import *
+from calc import *
 
 class country:
     def __init__(self, ID, GOLD, LAND, ESOLDIER, SOLDIER, PSOLDIER, TECH, WAR, ISPLY):
@@ -29,7 +30,7 @@ class country:
                     ### Defensive victories don't have rewards
             elif type == 3:
                 if outcome == 1:
-                    self.land -= stakes
+                    self.land -= 1
                 ### Victory
                 else:
                     vict = 'yes'
