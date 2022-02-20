@@ -8,3 +8,4 @@ from menus import *
 print('Welcome to Warsim\n\n\n')
 time.sleep(2)
 clearConsole()
+initiateMenu()
