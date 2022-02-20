@@ -1,29 +1,32 @@
 import os
 import random
 from misc import *
-from menus import *
 
 ### First creates a save, different than saving
-### startGame version alpha 1.0.1
+### startGame version alpha 1.0.2
 def startGame():
-    savename = input('What do you want to name your save?\n')
-    if os.path.exists(savename + '.txt'):
+    print('What do you want to name your save?\n')
+    savename = input()
+    if os.path.exists('savefiles\\' + savename + '.txt'):
         if input('That name is already taken, would you like to delete that save, Y/N?   ') == 'y':
-            os.remove('.\\savefiles\\' + savename + '.txt')
-            os.remove('.\\savefiles\\' + savename + '.ply.txt')
-            os.remove('.\\savefiles\\' + savename + 'ext.txt')
-            os.remove('.\\savefiles\\' + savename + 'war.txt')
+            os.remove('savefiles\\' + savename + '.txt')
+            os.remove('savefiles\\' + savename + '.ply.txt')
+            os.remove('savefiles\\' + savename + 'ext.txt')
+            os.remove('savefiles\\' + savename + 'war.txt')
             comb(savename)
             return 0
         else:
-            savename = input('\nWhat do you want to name your save?\n')
-    if os.path.exists('.\\savefiles\\list.txt'):
-        savelist = open('.\\savefiles\\list.txt', 'a')
-        with open('.\\savefiles\\list.txt', 'a') as savelist:
+            print('\nWhat do you want to name your save?\n')
+            savename = input()
+    if os.path.exists('savefiles\\list.txt'):
+        with open('savefiles\\list.txt', 'a') as savelist:
+            savelist.write(savename + '\n')
+    elif not os.path.exists('savefiles\\list.txt') and not os.path.exists('savefiles'):
+        os.mkdir('savefiles')
+        with open('savefiles\\list.txt', 'x') as savelist:
             savelist.write(savename + '\n')
     else:
-        savelist = open('.\\savefiles\\list.txt', 'x')
-        with open('.\\savefiles\\list.txt', 'x') as savelist:
+        with open('savefiles\\list.txt', 'x') as savelist:
             savelist.write(savename + '\n')
     clearConsole()
     print('What difficulty do you want your save to be?\n')
@@ -35,23 +38,21 @@ def startGame():
     print('6) Pure Insanity | May God have mercy on your soul\n')
     difficulty = int(input())
     _savename = savename
-    savename = '.\\savefiles\\' + _savename
+    savename = 'savefiles\\' + _savename
     ### Index file keeps track of some save info
-    indexfile = open(savename + '.txt', 'x')
     with open(savename + '.txt', 'x') as indexfile:
-        indexfile.write(difficulty + '\n')
-        savefile = open(savename + '.ply.txt', 'x')
-        with open(savename + '.ply.txt', 'x') as savefile:
+        indexfile.write(str(difficulty) + '\n')
+        with open(savename) + '.ply.txt', 'x') as savefile:
             if difficulty == 1:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(75000,250000) + '\n')
+                savefile.write(randStr(75000,250000) + '\n')
                 ### Land
-                savefile.write(random.randrange(15,35) + '\n')
+                savefile.write(randStr(15, 35) + '\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(1000,10000) + '\n')
-                savefile.write(random.randrange(500, 15000) + '\n')
-                savefile.write(random.randrange(25, 500) + '\n')
+                savefile.write(randStr(1000,10000) + '\n')
+                savefile.write(str(random.randrange(500, 15000)) + '\n')
+                savefile.write(str(random.randrange(25, 500)) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 if random.randrange(0,100000) > 99999:
@@ -69,7 +70,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(500, 25000) + '\n')
@@ -107,98 +107,7 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 2:
@@ -228,7 +137,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(2000, 100000) + '\n')
@@ -266,98 +174,7 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 3:
@@ -404,7 +221,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(1000, 75000) + '\n')
@@ -442,98 +258,7 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 4:
@@ -578,7 +303,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(1000, 175000) + '\n')
@@ -616,98 +340,7 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 5:
@@ -749,7 +382,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(2500, 200000) + '\n')
@@ -782,98 +414,7 @@ def startGame():
                             foreignfile.write('2\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 6:
@@ -916,7 +457,6 @@ def startGame():
                 rnd = random.randrange(10,35)
                 indexfile.write(rnd + '\n')
                 for i in range(rnd):
-                    foreignfile = open(savename + '.' + i + '.ext.txt', 'x')
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
                         foreignfile.write(random.randrange(2500, 500000) + '\n')
@@ -947,98 +487,7 @@ def startGame():
                             foreignfile.write('3\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen()
-                        foreignfile.write(w + '\n')
-                        if w == 8:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd:
-                                    if not r == i:
-                                        warfile.write('1\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 7:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 5:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 6:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 20:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 5:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 35:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 4:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 50:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 3:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 75:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 2:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        if random.randrange(1,100) > 90:
-                                            warfile.write('1\n')
-                                        else:
-                                            warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
-                        elif w == 1:
-                            warfile = open(savename + '.' + i + '.war.txt', 'x')
-                            with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-                                for r in rnd + 1:
-                                    if not r == i:
-                                        warfile.write('0\n')
-                                    else:
-                                        warfile.write('self\n')
-                                warfile.write('<---END OF FILE--->')
+                        w = warlikeGen(foreignfile, rnd, savename, i)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             savefile.write('<---END OF FILE--->')
@@ -1046,7 +495,7 @@ def startGame():
     return 1
 ### Deletes save files
 ### TODO: Update deleteSave()
-def warlikeGen():
+def warlikeGen(foreignfile, rnd, savename, i):
     q = random.randrange(1, 200)
     if q >= 175:
         ### Fights everyone
@@ -1062,36 +511,119 @@ def warlikeGen():
         return 5
     elif q >= 75 and q <= 99:
         ### Will go to war if necessary
-        return 4
+        w = 4
     elif q >= 50 and q <= 74:
         ### Reluctant to go to war
-        return 3
+        w = 3
     elif q >= 25 and q <= 49:
         ### Will only go to war if absolutely necessary
-        return 2
+        w = 2
     else:
         ### Will not attack ever
-        return 1
+        w = 1
+    foreignfile.write(w + '\n')
+    if w == 8:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd:
+                if not r == i:
+                    warfile.write('1\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 7:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 5:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 6:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 20:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 5:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 35:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 4:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 50:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 3:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 75:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 2:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    if random.randrange(1,100) > 90:
+                        warfile.write('1\n')
+                    else:
+                        warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
+    elif w == 1:
+        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
+            for r in rnd + 1:
+                if not r == i:
+                    warfile.write('0\n')
+                else:
+                    warfile.write('self\n')
+            warfile.write('<---END OF FILE--->')
 def deleteSave():
-    savename = input('What is the name of the save you want to delete?   ')
-    if os.path.exists('.\\savefiles\\' + savename + '.txt'):
-        os.remove('.\\savefiles\\' + savename + '.txt')
-        os.remove('.\\savefiles\\' + savename + '.ply.txt')
-        os.remove('.\\savefiles\\' + savename + 'ext.txt')
-        os.remove('.\\savefiles\\' + savename + 'war.txt')
+    print('What is the name of the save you want to delete?   ')
+    savename = input()
+    if os.path.exists('savefiles\\' + savename + '.txt'):
+        os.remove('savefiles\\' + savename + '.txt')
+        os.remove('savefiles\\' + savename + '.ply.txt')
+        os.remove('savefiles\\' + savename + 'ext.txt')
+        os.remove('savefiles\\' + savename + 'war.txt')
         comb(savename)
         return(1)
     else:
-        print("The file does not exist")
+        print("\nThe file does not exist")
         return(0)
 def loadSave():
     print('Which save would you like to load?\n')
 def comb(savename):
-    savelist = open('.\\savefiles\\list.txt', 'r')
+    savelist = open('savefiles\\list.txt', 'r')
     namelist = savelist.readlines()
     savelist.close()
-    _savelist = open('.\\savefiles\\list.txt', 'w')
-    with open('.\\savefiles\\list.txt', 'w') as savelist_:
+    with open('savefiles\\list.txt', 'w') as savelist_:
         for name in namelist:
             if not name.strip('\n') == savename:
                 savelist_.write(name)
