@@ -15,6 +15,12 @@ I know I know, I shouldn't have made this in python but I don't give a fuck.
         - [ ] Wars
         - [ ] Diplomacy
     - [ ] Start work on internal player relations systems
+- [ ] Make the game look good
+    - [ ] Fancy formating on text
+    - [ ] Add ACSII art
+    - [ ] Add country names
+        - [ ] Player
+        - [ ] CPU
 - [ ] Add in some easter eggs
     - [ ] Normal easter eggs
     - [ ] Hidden trans pride flags
