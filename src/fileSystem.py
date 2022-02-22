@@ -42,7 +42,7 @@ def startGame():
     ### Index file keeps track of some save info
     with open(savename + '.txt', 'x') as indexfile:
         indexfile.write(str(difficulty) + '\n')
-        with open(savename) + '.ply.txt', 'x') as savefile:
+        with open(savename + '.ply.txt', 'x') as savefile:
             if difficulty == 1:
                 ### Player info is .ply.txt
                 ### Gold
