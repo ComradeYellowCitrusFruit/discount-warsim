@@ -2,7 +2,7 @@
   
 Discount Warsim is exactly what it sounds like, a discount version of Warsim: Realm of Aslona that I am making.  
 It serves no purpose what so ever except your entertainment (and my suffering).  
-I know I know, I should have made this in python but I don't give a fuck.  
+I know I know, I shouldn't have made this in python but I don't give a fuck.  
 
 # TODO list
 
