@@ -1,18 +1,32 @@
 import os
 import random
+import time
 from misc import *
 
 ### First creates a save, different than saving
 ### startGame version alpha 1.0.2
-def startGame():
+def startGame(log):
     print('What do you want to name your save?\n')
     savename = input()
     if os.path.exists('savefiles\\' + savename + '.txt'):
         if input('That name is already taken, would you like to delete that save, Y/N?   ') == 'y':
+            log.uniqueLog('Error: Filename ' + savename + ' is already taken')
+            index_file = open('savefiles\\' + savename + '.txt', 'r')
+            count = int(index_file.readline())
+            index_file.close()
             os.remove('savefiles\\' + savename + '.txt')
             os.remove('savefiles\\' + savename + '.ply.txt')
-            os.remove('savefiles\\' + savename + 'ext.txt')
-            os.remove('savefiles\\' + savename + 'war.txt')
+            ### TODO: Fix this
+            for i in range(count):
+                if os.path.exists('savefiles\\' + savename + '.' + str(i) + '.ext.txt'):
+                    os.remove('savefiles\\' + savename + '.' + str(i) + '.ext.txt')
+                else:
+                    log.uniqueLog('Error: File ' + 'savefiles\\' + savename + '.' + str(i) + '.ext.txt' + ' does not exist')
+            for i in range(count):
+                if os.path.exists('savefiles\\' + savename + '.' + str(i) + '.war.txt'):
+                    os.remove('savefiles\\' + savename + '.' + str(i) + '.ext.txt')
+                else:
+                    log.uniqueLog('Error: File ' + 'savefiles\\' + savename + '.' + str(i) + '.war.txt' + ' does not exist')
             comb(savename)
             return 0
         else:
@@ -68,17 +82,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
-                    with open(savename + '.ext.txt', 'x') as foreignfile:
+                    with open(savename + '.' + str(i) + '.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(500, 25000) + '\n')
+                        foreignfile.write(randStr(500, 25000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(1,15) + '\n')
+                        foreignfile.write(randStr(1,15) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(50, 10000) + '\n')
-                        foreignfile.write(random.randrange(50, 10000) + '\n')
-                        foreignfile.write(random.randrange(0, 2500) + '\n')
+                        foreignfile.write(randStr(50, 10000) + '\n')
+                        foreignfile.write(randStr(50, 10000) + '\n')
+                        foreignfile.write(randStr(0, 2500) + '\n')
                         ### Tech
                         q = random.randrange(0,200)
                         if q >= 199:
@@ -107,19 +121,19 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen(foreignfile, rnd, savename, i)
+                        w = warlikeGen(foreignfile, rnd, savename, i, log)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 2:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(25000,100000) + '\n')
+                savefile.write(randStr(25000,100000) + '\n')
                 ### Land
-                savefile.write(random.randrange(8,25) + '\n')
+                savefile.write(randStr(8,25) + '\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(500,7500) + '\n')
-                savefile.write(random.randrange(250, 7500) + '\n')
-                savefile.write(random.randrange(25, 400) + '\n')
+                savefile.write(randStr(500,7500) + '\n')
+                savefile.write(randStr(250, 7500) + '\n')
+                savefile.write(randStr(25, 400) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 if random.randrange(0,100) > 75:
@@ -135,17 +149,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(2000, 100000) + '\n')
+                        foreignfile.write(randStr(2000, 100000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(2,25) + '\n')
+                        foreignfile.write(randStr(2,25) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(150, 10000) + '\n')
-                        foreignfile.write(random.randrange(150, 10000) + '\n')
-                        foreignfile.write(random.randrange(50, 2500) + '\n')
+                        foreignfile.write(randStr(150, 10000) + '\n')
+                        foreignfile.write(randStr(150, 10000) + '\n')
+                        foreignfile.write(randStr(50, 2500) + '\n')
                         ### Tech
                         q = random.randrange(0,200)
                         if q >= 199:
@@ -174,19 +188,20 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen(foreignfile, rnd, savename, i)
+                        w = warlikeGen(foreignfile, rnd, savename, i, log)
                         foreignfile.write('<---END OF FILE--->')
+                        
                 ### END OF FOREIGN FILE
             elif difficulty == 3:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(1000,50000) + '\n')
+                savefile.write(randStr(1000,50000) + '\n')
                 ### Land
-                savefile.write(random.randrange(4,20) + '\n')
+                savefile.write(randStr(4,20) + '\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(250,5000) + '\n')
-                savefile.write(random.randrange(100, 5000) + '\n')
-                savefile.write(random.randrange(10, 200) + '\n')
+                savefile.write(randStr(250,5000) + '\n')
+                savefile.write(randStr(100, 5000) + '\n')
+                savefile.write(randStr(10, 200) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 rnd = random.randrange(0,100)
@@ -219,17 +234,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(1000, 75000) + '\n')
+                        foreignfile.write(randStr(1000, 75000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(2,25) + '\n')
+                        foreignfile.write(randStr(2,25) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(150, 10000) + '\n')
-                        foreignfile.write(random.randrange(150, 10000) + '\n')
-                        foreignfile.write(random.randrange(50, 2500) + '\n')
+                        foreignfile.write(randStr(150, 10000) + '\n')
+                        foreignfile.write(randStr(150, 10000) + '\n')
+                        foreignfile.write(randStr(50, 2500) + '\n')
                         ### Tech
                         q = random.randrange(0,100)
                         if q == 100:
@@ -264,13 +279,13 @@ def startGame():
             elif difficulty == 4:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(250,2500) + '\n')
+                savefile.write(randStr(250,2500) + '\n')
                 ### Land
-                savefile.write(random.randrange(2,8) + '\n')
+                savefile.write(randStr(2,8) + '\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(100,2500) + '\n')
-                savefile.write(random.randrange(50, 2500) + '\n')
-                savefile.write(random.randrange(0, 100) + '\n')
+                savefile.write(randStr(100,2500) + '\n')
+                savefile.write(randStr(50, 2500) + '\n')
+                savefile.write(randStr(0, 100) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 rnd = random.randrange(0,100)
@@ -301,17 +316,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(1000, 175000) + '\n')
+                        foreignfile.write(randStr(1000, 175000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(5,25) + '\n')
+                        foreignfile.write(randStr(5,25) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(200, 25000) + '\n')
-                        foreignfile.write(random.randrange(200, 25000) + '\n')
-                        foreignfile.write(random.randrange(100, 5000) + '\n')
+                        foreignfile.write(randStr(200, 25000) + '\n')
+                        foreignfile.write(randStr(200, 25000) + '\n')
+                        foreignfile.write(randStr(100, 5000) + '\n')
                         ### Tech
                         q = random.randrange(0,100)
                         if q >= 95:
@@ -340,19 +355,19 @@ def startGame():
                             foreignfile.write('0\n')
                         ### The most basic possible diplomacy, who they are and are not at war with
                         ### Determines how warlike they are
-                        w = warlikeGen(foreignfile, rnd, savename, i)
+                        w = warlikeGen(foreignfile, rnd, savename, i, log)
                         foreignfile.write('<---END OF FILE--->')
                 ### END OF FOREIGN FILE
             elif difficulty == 5:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(50,750) + '\n')
+                savefile.write(randStr(50,750) + '\n')
                 ### Land
                 savefile.write('1\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(100,2500) + '\n')
-                savefile.write(random.randrange(50, 2500) + '\n')
-                savefile.write(random.randrange(0, 50) + '\n')
+                savefile.write(randStr(100,2500) + '\n')
+                savefile.write(randStr(50, 2500) + '\n')
+                savefile.write(randStr(0, 50) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 rnd = random.randrange(0,100)
@@ -380,17 +395,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
                     with open(savename + '.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(2500, 200000) + '\n')
+                        foreignfile.write(randStr(2500, 200000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(5,25) + '\n')
+                        foreignfile.write(randStr(5,25) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(500, 25000) + '\n')
-                        foreignfile.write(random.randrange(500, 25000) + '\n')
-                        foreignfile.write(random.randrange(500, 5000) + '\n')
+                        foreignfile.write(randStr(500, 25000) + '\n')
+                        foreignfile.write(randStr(500, 25000) + '\n')
+                        foreignfile.write(randStr(500, 5000) + '\n')
                         ### Tech
                         q = random.randrange(0,100)
                         if q >= 85:
@@ -420,13 +435,13 @@ def startGame():
             elif difficulty == 6:
                 ### Player info is .ply.txt
                 ### Gold
-                savefile.write(random.randrange(1,500) + '\n')
+                savefile.write(randStr(1,500) + '\n')
                 ### Land
                 savefile.write('1\n')
                 ### Peasants/Soldiers/Elite Soldiers
-                savefile.write(random.randrange(10,250) + '\n')
-                savefile.write(random.randrange(0, 100) + '\n')
-                savefile.write(random.randrange(0, 10) + '\n')
+                savefile.write(randStr(10,250) + '\n')
+                savefile.write(randStr(0, 100) + '\n')
+                savefile.write(randStr(0, 10) + '\n')
                 ### Tech
                 ### Tech is the level your technology is at, higher is better
                 rnd = random.randrange(0,100)
@@ -455,17 +470,17 @@ def startGame():
                 ### TODO: Add naming
                 ### TODO: Add Diplomacy
                 rnd = random.randrange(10,35)
-                indexfile.write(rnd + '\n')
+                indexfile.write(str(rnd) + '\n')
                 for i in range(rnd):
-                    with open(savename + '.ext.txt', 'x') as foreignfile:
+                    with open(savename + '.' + str(i) +'.ext.txt', 'x') as foreignfile:
                         ### Gold
-                        foreignfile.write(random.randrange(2500, 500000) + '\n')
+                        foreignfile.write(randStr(2500, 500000) + '\n')
                         ### Land
-                        foreignfile.write(random.randrange(5,50) + '\n')
+                        foreignfile.write(randStr(5,50) + '\n')
                         ### Peasants/Soldiers/Elite Soldiers
-                        foreignfile.write(random.randrange(500, 50000) + '\n')
-                        foreignfile.write(random.randrange(500, 50000) + '\n')
-                        foreignfile.write(random.randrange(500, 10000) + '\n')
+                        foreignfile.write(randStr(500, 50000) + '\n')
+                        foreignfile.write(randStr(500, 50000) + '\n')
+                        foreignfile.write(randStr(500, 10000) + '\n')
                         ### Tech
                         q = random.randrange(0,100)
                         if q >= 85:
@@ -494,8 +509,7 @@ def startGame():
         indexfile.write('<---END OF FILE--->')
     return 1
 ### Deletes save files
-### TODO: Update deleteSave()
-def warlikeGen(foreignfile, rnd, savename, i):
+def warlikeGen(foreignfile, rnd, savename, i, log):
     q = random.randrange(1, 200)
     if q >= 175:
         ### Fights everyone
@@ -521,18 +535,19 @@ def warlikeGen(foreignfile, rnd, savename, i):
     else:
         ### Will not attack ever
         w = 1
-    foreignfile.write(w + '\n')
+    foreignfile.write(str(w) + '\n')
+    rng = rnd + 1
     if w == 8:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in rng:
                 if not r == i:
                     warfile.write('1\n')
                 else:
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 7:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 5:
                         warfile.write('1\n')
@@ -542,8 +557,8 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 6:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 20:
                         warfile.write('1\n')
@@ -553,8 +568,8 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 5:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 35:
                         warfile.write('1\n')
@@ -564,8 +579,8 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 4:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 50:
                         warfile.write('1\n')
@@ -575,8 +590,8 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 3:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 75:
                         warfile.write('1\n')
@@ -586,8 +601,8 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 2:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     if random.randrange(1,100) > 90:
                         warfile.write('1\n')
@@ -597,14 +612,14 @@ def warlikeGen(foreignfile, rnd, savename, i):
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
     elif w == 1:
-        with open(savename + '.' + i + '.war.txt', 'x') as warfile:
-            for r in rnd + 1:
+        with open(savename + '.' + str(i) + '.war.txt', 'x') as warfile:
+            for r in range(rng):
                 if not r == i:
                     warfile.write('0\n')
                 else:
                     warfile.write('self\n')
             warfile.write('<---END OF FILE--->')
-def deleteSave():
+def deleteSave(log):
     print('What is the name of the save you want to delete?   ')
     savename = input()
     if os.path.exists('savefiles\\' + savename + '.txt'):
@@ -617,13 +632,156 @@ def deleteSave():
     else:
         print("\nThe file does not exist")
         return(0)
-def loadSave():
+def loadSave(log):
     print('Which save would you like to load?\n')
-def comb(savename):
+def comb(savename, log):
     savelist = open('savefiles\\list.txt', 'r')
     namelist = savelist.readlines()
     savelist.close()
     with open('savefiles\\list.txt', 'w') as savelist_:
         for name in namelist:
             if not name.strip('\n') == savename:
+                log.uniqueLog('Combed ' + savename + ' out of the save list')
                 savelist_.write(name)
+class logger:
+    def __init__(self):
+        if os.path.exists('savefiles\\log.txt'):
+            logfile = open('savefiles\\log.txt', 'a')
+            logfile.write(time.asctime() + ': New Session initated\n')
+            logfile.close()
+            self.current = [time.asctime() + ': New Session initated']
+            logreader = open('savefiles\\log.txt', 'r')
+            self.all = logreader.readlines()
+        else:
+            logfile = open('savefiles\\log.txt', 'x')
+            logfile.write(time.asctime() + ': First session initiated\n')
+            logfile.close()
+            self.current = [time.asctime() + ': First Session initated']
+            self.initTime = time.asctime() + ': First Session initated'
+            self.sessionCount = 0
+        self.path = 'savefiles\\log.txt'
+    ### Called in the event of a graceful exit sequence
+    def exit(self):
+        logfile = open(self.path, 'a')
+        logfile.write(time.asctime() + ': Session shutdown\n')
+        logfile.close()
+    def uniqueLog(self, msg):
+        logfile = open(self.path, 'a')
+        logfile.write(time.asctime() + ': ' + msg + '\n')
+        logfile.close()
+    def uniqueLogs(self, msgs):
+        logfile = open(self.path, 'a')
+        for msg in msgs:
+            logfile.write(time.asctime() + ': ' + msg + '\n')
+        logfile.close()
+    def getCurrent(self):
+        for log in self.current:
+            print(log + '\n')
+        return self.current
+    def getSession(self, session):
+        self.All(False)
+        logfile = open(self.path, 'a')
+        logfile.write(time.asctime() + ': Fetched session ' + str(session) + '\n')
+        logfile.close()
+        j = 0
+        for i in len(self.all):
+            if not self.all[i].find(': New Session initated\n') == -1:
+                j += 1
+                if session == j:
+                    startLine = i
+                    break
+            elif not self.all[i].find(': First Session initated\n') == -1:
+                if session == 0:
+                    startLine = i
+                    break
+            else:
+                pass
+        j = 0
+        for i in range(self.all):
+            if not self.all[i].find(': Session shutdown\n') == -1:
+                j += 1
+                if session == j:
+                    endLine = i + 1
+                    break
+        sessionLines = ['placeholder']
+        sessionLines.clear()
+        sessionLines.insert(self.all[startLine])
+        for i in range(startLine, endLine):
+            if not i == startLine and not self.all[i].find(': New Session initated') == -1:
+                _endLine = i
+                crash = True
+                break
+            else:
+                crash = False
+            sessionLines.Append(self.all[i])
+        if crash == True:
+            endLine = _endLine
+            for i in range(startLine + 1, endLine):
+                sessionLines.Append(self.all[i])
+        return sessionLines
+    def getAll(self):
+        self.All(False)
+        for log in self.all:
+            print(log + '\n')
+    def All(self, mute):
+        if mute == False:
+            logfile = open(self.path, 'a')
+            logfile.write(time.asctime() + ': Fetched logs')
+        logfile.close()
+        logread = open(self.path, 'r')
+        self.all = logread.readlines()
+    def Current(self):
+        self.All(False)
+        logfile = open(self.path, 'a')
+        logfile.write(time.asctime() + ': Fetched current session')
+        self.All(True)
+        for i in len(self.current):
+            if self.initTime == self.all[i]:
+                capture = i
+            else:
+                pass
+        for i in len(self.all):
+            if i - capture >= 0:
+                self.current[i - capture] = self.all[i]
+    def Crash(self, tf, returnLine, patch, startline = 0):
+        self.All(False)
+        self.uniqueLog('Crash detector active using the following parameters:')
+        self.uniqueLogs(['Return true or false: ' + str(tf), 'Return the line number: ' + str(returnLine), 'Patch the crash line: ' + str(patch), 'Start from line: ' + str(startline)])
+        logread = open(self.path, 'r')
+        logs = logread.readlines
+        lines = ['deftest']
+        lines.clear()
+        for i in range(startline, len(logs)):
+            if not self.all[i].find(': New Session initated') == -1 or not self.all[i].find(': First Session initated') == -1 and lines[1] == NULL:
+                lines[1] = i 
+            elif not self.all[i].find(': Session shutdown') == -1 or not self.all[i].find(': Crash detected') == -1:
+                lines[2] = i
+            for j in range(lines[1], lines[2]):
+                if not i == lines[1] and not self.all[i].find(': New Session initated') == -1:
+                    if patch == True:
+                        if os.path.exists(self.path + '.bak'): os.remove(self.path + '.bak')
+                        backup = open(self.path + '.bak', 'x')
+                        for t in range(self.all):
+                            if self.all[t].find('\n') == -1:
+                                backup.write(self.all[t] + '\n')
+                            else:
+                                backup.write(self.all[t])
+                        backup.close()
+                        os.remove(self.path)
+                        logfile = open(self.path, 'x')
+                        for t in range(self.all):
+                            if t == i:
+                                pass
+                            elif self.all[t].find('\n') == -1:
+                                backup.write(self.all[t] + '\n')
+                            else:
+                                backup.write(self.all[t])
+                        if tf == True:
+                            return True
+                        elif returnLine:
+                            return i
+                    else:
+                        if tf == True:
+                            return True
+                        elif returnLine:
+                            return i
