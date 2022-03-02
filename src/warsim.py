@@ -1,9 +1,8 @@
 ### A core module so to speak of the game itself,
 ### Will handle all ingame functions, and also be largly intertwined with the saving and loading processes
-from fileSystem import *
 from misc import *
-from menus import *
-from calc import *
+import menus
+import calc
 
 class country:
     def __init__(self, ID, GOLD, LAND, ESOLDIER, SOLDIER, PSOLDIER, TECH, WAR, ISPLY):

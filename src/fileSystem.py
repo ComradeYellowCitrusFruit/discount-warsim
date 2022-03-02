@@ -1,6 +1,7 @@
 import os
 import random
 import time
+import warsim
 from misc import *
 
 ### First creates a save, different than saving
@@ -678,51 +679,12 @@ class logger:
         for log in self.current:
             print(log + '\n')
         return self.current
-    def getSession(self, session):
-        self.All(False)
-        logfile = open(self.path, 'a')
-        logfile.write(time.asctime() + ': Fetched session ' + str(session) + '\n')
-        logfile.close()
-        j = 0
-        for i in len(self.all):
-            if not self.all[i].find(': New Session initated\n') == -1:
-                j += 1
-                if session == j:
-                    startLine = i
-                    break
-            elif not self.all[i].find(': First Session initated\n') == -1:
-                if session == 0:
-                    startLine = i
-                    break
-            else:
-                pass
-        j = 0
-        for i in range(self.all):
-            if not self.all[i].find(': Session shutdown\n') == -1:
-                j += 1
-                if session == j:
-                    endLine = i + 1
-                    break
-        sessionLines = ['placeholder']
-        sessionLines.clear()
-        sessionLines.insert(self.all[startLine])
-        for i in range(startLine, endLine):
-            if not i == startLine and not self.all[i].find(': New Session initated') == -1:
-                _endLine = i
-                crash = True
-                break
-            else:
-                crash = False
-            sessionLines.Append(self.all[i])
-        if crash == True:
-            endLine = _endLine
-            for i in range(startLine + 1, endLine):
-                sessionLines.Append(self.all[i])
-        return sessionLines
     def getAll(self):
         self.All(False)
+        self.all = list(self.all)
         for log in self.all:
             print(log + '\n')
+        self.All(True)
     def All(self, mute):
         if mute == False:
             logfile = open(self.path, 'a')
@@ -730,58 +692,17 @@ class logger:
         logfile.close()
         logread = open(self.path, 'r')
         self.all = logread.readlines()
+        for i in range(len(self.all)):
+            if i == 0:
+                logStr = self.all[i]
+            else:
+                logStr += self.all[i]
+        self.all = logStr
     def Current(self):
         self.All(False)
         logfile = open(self.path, 'a')
         logfile.write(time.asctime() + ': Fetched current session')
         self.All(True)
-        for i in len(self.current):
-            if self.initTime == self.all[i]:
-                capture = i
-            else:
-                pass
-        for i in len(self.all):
-            if i - capture >= 0:
-                self.current[i - capture] = self.all[i]
-    def Crash(self, tf, returnLine, patch, startline = 0):
-        self.All(False)
-        self.uniqueLog('Crash detector active using the following parameters:')
-        self.uniqueLogs(['Return true or false: ' + str(tf), 'Return the line number: ' + str(returnLine), 'Patch the crash line: ' + str(patch), 'Start from line: ' + str(startline)])
-        logread = open(self.path, 'r')
-        logs = logread.readlines
-        lines = ['deftest']
-        lines.clear()
-        for i in range(startline, len(logs)):
-            if not self.all[i].find(': New Session initated') == -1 or not self.all[i].find(': First Session initated') == -1 and lines[1] == NULL:
-                lines[1] = i 
-            elif not self.all[i].find(': Session shutdown') == -1 or not self.all[i].find(': Crash detected') == -1:
-                lines[2] = i
-            for j in range(lines[1], lines[2]):
-                if not i == lines[1] and not self.all[i].find(': New Session initated') == -1:
-                    if patch == True:
-                        if os.path.exists(self.path + '.bak'): os.remove(self.path + '.bak')
-                        backup = open(self.path + '.bak', 'x')
-                        for t in range(self.all):
-                            if self.all[t].find('\n') == -1:
-                                backup.write(self.all[t] + '\n')
-                            else:
-                                backup.write(self.all[t])
-                        backup.close()
-                        os.remove(self.path)
-                        logfile = open(self.path, 'x')
-                        for t in range(self.all):
-                            if t == i:
-                                pass
-                            elif self.all[t].find('\n') == -1:
-                                backup.write(self.all[t] + '\n')
-                            else:
-                                backup.write(self.all[t])
-                        if tf == True:
-                            return True
-                        elif returnLine:
-                            return i
-                    else:
-                        if tf == True:
-                            return True
-                        elif returnLine:
-                            return i
+        logfile.close()
+        log = self.all.split(self.initTime + ': New Session initated\n')
+        self.current = list(self.initTime + ': New Session initated\n' + log[1])
