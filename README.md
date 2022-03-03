@@ -22,5 +22,5 @@ I know I know, I shouldn't have made this in python but I don't give a fuck.
         - [ ] Player
         - [ ] CPU
 - [ ] Add in some easter eggs
-    - [ ] Normal easter eggs
+    - [x] Normal easter eggs
     - [ ] Hidden trans pride flags

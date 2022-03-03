@@ -1,14 +1,33 @@
 ### Holds menus like the main menu, pause menu, etc
 import time
 import fileSystem
+import re
+import playsound
 from misc import *
+import lemon16_85.Lemon16_85 as Base16_85
 
 def mainMenu(log):
     print('1) New Game\n')
     print('2) Load save\n')
     print('3) Delete save\n')
     print('4) Quit to desktop\n')
-    Input = int(input())
+    Input = input()
+    if re.search(Regex.UKRAINE, Input.lower()):
+        tmp = EasterEggs.Ukraine()
+        ### TODO: fix ukraine anthem not playing
+        """
+        if not os.path.exists('resources//ukraine_anthem.mp3'):
+            TmP = open('resources//ukraine_anthem.mp3', 'xb')
+            TmP.write(Base16_85.Decode(tmp, False))
+            TmP.close()
+        try:
+            playsound.playsound('resources//ukraine_anthem.mp3')
+        except:
+           print('Can\'t open ukraine_anthem.mp3') 
+        """
+        print('Press any key to continue...    ')
+        input()
+        initiateMenu(log)
     if Input == 4:
         log.exit()
         quit()
@@ -34,4 +53,4 @@ def initiateMenu(log):
     elif initiate == 3:
         fileSystem.deleteSave()
     else:
-        initiateMenu()
+        initiateMenu(log)

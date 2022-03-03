@@ -3,8 +3,8 @@ import os
 import math
 
 ### Free form encoding, encodes anything you put in, no additional formating, no password applied, no nothin
-def Encode(file: str, codec = 'unicode-escape') -> bytes:
-    File = base64.b16encode(file.encode(codec))
+def Encode(file: bytes) -> bytes:
+    File = base64.b16encode(file)
     File = base64.b32encode(File)
     File = base64.b64encode(File)
     File = base64.b85encode(File)
@@ -50,10 +50,11 @@ def passwordEncode(file : str, password : str, codec = 'unicode-escape', passes 
     elif snd == 16:
         File = base64.b16encode(File)
     return File
-def Decode(file: bytes, codec = 'unicode-escape') -> str:
+def Decode(file: bytes, useCodec: bool, codec = 'unicode-escape'):
     File = base64.b85decode(file)
     File = base64.b64decode(File)
     File = base64.b32decode(File)
     File = base64.b16decode(File)
-    File = File.decode(codec)
+    if useCodec == True:
+        File = File.decode(codec)
     return File

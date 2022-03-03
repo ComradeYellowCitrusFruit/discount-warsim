@@ -11,7 +11,7 @@ class save():
         ind += str(attributes[1]) + '\n'
         ind += str(attributes[2]) + '\n'
         ind += '}\n'
-        return Encode(ind)
+        return Encode(ind.encode('unicode-escape'))
     def playerCompile(self, attributes: list) -> bytes:
         ### Atrributes contains in the following order:
         ### Name
@@ -35,7 +35,7 @@ class save():
         for i in range(len(warInf)):
             ply += str(warInf[i]) + '\n'
         ply += '}\n'
-        return Encode(ply)
+        return Encode(ply.encode('unicode-escape'))
     def foreignCompile(self, attributes: list) -> bytes:
         ### Atrributes contains in the following order:
         ### ID
@@ -61,7 +61,7 @@ class save():
         for i in range(len(warInf)):
             fgn += str(warInf[i]) + '\n'
         fgn += '}\n'
-        return Encode(fgn)
+        return Encode(fgn.encode('unicode-escape'))
     def finalCompile(self, ind: bytes, ply: bytes, fgn: bytes):
         final = ind + ply + fgn
         return final
