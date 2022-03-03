@@ -5,7 +5,7 @@ import menus
 import calc
 
 class country:
-    def __init__(self, ID, GOLD, LAND, ESOLDIER, SOLDIER, PSOLDIER, TECH, WAR, ISPLY):
+    def __init__(self, ID, GOLD, LAND, ESOLDIER, SOLDIER, PSOLDIER, TECH, WAR, ISPLY, NAME):
         self.id = ID
         self.gold = GOLD
         self.land = LAND
@@ -16,6 +16,7 @@ class country:
         self.tech = TECH
         self.warlike = WAR
         self.isPlayer = ISPLY
+        self.name = NAME
     def battle(self, type, isVIC, stakes, outcome):
         if isVIC == 1:
             ### Type one is a raid, type two is a skirmish, type three is a full blown invasion
