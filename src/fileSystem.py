@@ -2,6 +2,8 @@ import os
 import random
 import time
 import warsim
+import lemon16_85.warsim16_85
+import lemon16_85.Lemon16_85
 from misc import *
 
 ### First creates a save, different than saving
