@@ -2,14 +2,14 @@ import os
 import random
 import time
 import warsim
-import lemon16_85.warsim16_85
+import lemon16_85.warsim16_85 as subFS
 import lemon16_85.Lemon16_85
 from misc import *
 
 ### First creates a save, different than saving
 ### startGame version alpha 1.0.2
 def startGame(log):
-    save = lemon16_85.warsim16_85.save()
+    save = subFS.save()
     print('What do you want to name your save?\n')
     savename = input()
     if os.path.exists('savefiles\\' + savename + '.warsim'):
