@@ -13,7 +13,7 @@ def startGame(log):
     print('What do you want to name your save?\n')
     savename = input()
     if os.path.exists('savefiles\\' + savename + '.warsim'):
-        if input('That name is already taken, would you like to delete that save, Y/N?   ') == 'y':
+        if input('That name is already taken, would you like to delete that save, Y/N?   ') == 'y' or input('That name is already taken, would you like to delete that save, Y/N?   ') == 'Y':
             log.uniqueLog('Error: Filename ' + savename + ' is already taken')
             os.remove('savefiles\\' + savename + '.warsim')
             comb(savename)
